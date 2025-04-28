@@ -60,6 +60,21 @@ func (k *KMP) searchAll(s string, pattern string) []int {
 	return ans
 }
 
+// 求字符串的最长回文前缀
+func (k *KMP) longestPalindromePrefix(s string) int {
+	var sb strings.Builder
+	sb.WriteString(s)
+	sb.WriteByte('#')
+
+	// 添加s的反转
+	for i := len(s) - 1; i >= 0; i-- {
+		sb.WriteByte(s[i])
+	}
+	t := sb.String()
+	next := k.getNext(t)
+	return next[len(t)-1]
+}
+
 func NewKMP() *KMP {
 	return &KMP{}
 }
@@ -122,25 +137,8 @@ func shortestPalindrome(s string) string {
 	if len(s) <= 1 {
 		return s
 	}
-
-	// 构造新字符串 t = s + '#' + reverse(s)
-	// 添加'#'是为了避免匹配到错误的位置，如"aaa"可能匹配到"aaaa"的多个位置
-	var sb strings.Builder
-	sb.WriteString(s)
-	sb.WriteByte('#')
-
-	// 添加s的反转
-	for i := len(s) - 1; i >= 0; i-- {
-		sb.WriteByte(s[i])
-	}
-	t := sb.String()
-
-	// 使用KMP算法求t的next数组
 	k := NewKMP()
-	next := k.getNext(t)
-
-	// next数组最后一个元素就是s的最长前缀回文的长度
-	maxPrefixPalindrome := next[len(t)-1]
+	maxPrefixPalindrome := k.longestPalindromePrefix(s)
 
 	// 前面添加的字符是s除了最长前缀回文之外的剩余部分的反转
 	// 使用strings.Builder避免O(n²)的字符串拼接
