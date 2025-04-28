@@ -1,5 +1,9 @@
 package kmp
 
+import (
+	"strings"
+)
+
 type KMP struct {
 }
 
@@ -109,4 +113,43 @@ func repeatedSubstringPattern(s string) bool {
 		8. 因此，S由一个长度为gcd(n,k)的子串重复n/gcd(n,k)次构成
 	*/
 	return k.search(doubleS, s) != -1
+}
+
+// 例题[214] 最短回文串
+// 给定一个字符串 s，你可以通过在字符串前面添加字符将其转换为回文串。
+// 找到并返回可以用这种方式转换的最短回文串。
+func shortestPalindrome(s string) string {
+	if len(s) <= 1 {
+		return s
+	}
+
+	// 构造新字符串 t = s + '#' + reverse(s)
+	// 添加'#'是为了避免匹配到错误的位置，如"aaa"可能匹配到"aaaa"的多个位置
+	var sb strings.Builder
+	sb.WriteString(s)
+	sb.WriteByte('#')
+
+	// 添加s的反转
+	for i := len(s) - 1; i >= 0; i-- {
+		sb.WriteByte(s[i])
+	}
+	t := sb.String()
+
+	// 使用KMP算法求t的next数组
+	k := NewKMP()
+	next := k.getNext(t)
+
+	// next数组最后一个元素就是s的最长前缀回文的长度
+	maxPrefixPalindrome := next[len(t)-1]
+
+	// 前面添加的字符是s除了最长前缀回文之外的剩余部分的反转
+	// 使用strings.Builder避免O(n²)的字符串拼接
+	var result strings.Builder
+	for i := len(s) - 1; i >= maxPrefixPalindrome; i-- {
+		result.WriteByte(s[i])
+	}
+	result.WriteString(s)
+
+	// 返回结果
+	return result.String()
 }
