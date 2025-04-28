@@ -37,6 +37,25 @@ func (k *KMP) search(s string, pattern string) int {
 	return -1
 }
 
+func (k *KMP) searchAll(s string, pattern string) []int {
+	n := len(s)
+	next := k.getNext(pattern)
+	ans := []int{}
+	for i, j := 0, 0; i < n; i++ {
+		for j > 0 && s[i] != pattern[j] {
+			j = next[j-1]
+		}
+		if s[i] == pattern[j] {
+			j++
+		}
+		if j == len(pattern) {
+			ans = append(ans, i-j+1)
+			j = next[j-1]
+		}
+	}
+	return ans
+}
+
 func NewKMP() *KMP {
 	return &KMP{}
 }
