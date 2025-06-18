@@ -41,6 +41,7 @@ func (k *KMP) search(s string, pattern string) int {
 	return -1
 }
 
+// 在 s 中查找 pattern，返回所有匹配的索引
 func (k *KMP) searchAll(s string, pattern string) []int {
 	n := len(s)
 	next := k.getNext(pattern)
