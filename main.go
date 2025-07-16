@@ -50,7 +50,7 @@ func main() {
 	}
 
 	// 3. 插入数据
-	stmt, err := db.Prepare(`INSERT INTO contest_problems (title, score, difficulty, url, source) VALUES (?, ?, ?, ?, ?)`)
+	stmt, err := db.Prepare(`INSERT INTO contest_problems (title, score, url, source) VALUES (?, ?, ?, ?)`)
 	if err != nil {
 		log.Fatal(err)
 	}
